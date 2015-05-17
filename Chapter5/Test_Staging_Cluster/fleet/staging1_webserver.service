@@ -1,0 +1,20 @@
+[Unit]
+Description=nginx
+
+[Service]
+User=core
+TimeoutStartSec=0
+EnvironmentFile=/etc/environment
+ExecStartPre=-/usr/bin/docker rm staging1-webserver
+ExecStart=/usr/bin/docker run --rm --name staging1-webserver -p 80:80 \
+-v /home/core/share/nginx/html:/usr/share/nginx/html \
+nginx:latest
+#
+ExecStop=/usr/bin/docker stop staging1-webserver
+ExecStopPost=-/usr/bin/docker rm staging1-webserver
+
+Restart=always
+RestartSec=10s
+
+[X-Fleet]
+MachineMetadata=cpeer=tsc-staging1

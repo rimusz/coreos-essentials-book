@@ -2,10 +2,10 @@
 
 coreos:
   etcd2:
-    name: core-01
+    name: core-dev-01
     initial-advertise-peer-urls: http://$private_ipv4:2380
     listen-peer-urls: http://$private_ipv4:2380,http://$private_ipv4:7001
-    initial-cluster-token: core-01_etcd
+    initial-cluster-token: etcd01
     initial-cluster: core-01=http://$private_ipv4:2380
     initial-cluster-state: new
     advertise-client-urls: http://$public_ipv4:2379,http://$public_ipv4:4001
@@ -33,3 +33,11 @@ coreos:
 
         [Install]
         WantedBy=sockets.target
+  update:
+    reboot-strategy: off
+
+write_files:
+ - path: /etc/systemd/system/docker.service.d/50-insecure-registry.conf
+   content: |
+      [Service]
+      Environment=DOCKER_OPTS='--insecure-registry="0.0.0.0/0"'
