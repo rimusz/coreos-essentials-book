@@ -1,0 +1,19 @@
+[Unit]
+Description=HelloWorld
+# this unit will only start after docker.service
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=0
+# busybox image will be pulled from docker public registry
+ExecStartPre=/usr/bin/docker pull busybox
+# we use rm just in case the container with the name “busybox1” is left 
+ExecStartPre=-/usr/bin/docker rm busybox1
+# we start docker container
+ExecStart=/usr/bin/docker run --rm --name busybox1 busybox /bin/sh -c "while true; do echo Hello World; sleep 1; done"
+# we stop docker container when systemctl stop is used
+ExecStop=/usr/bin/docker stop busybox1
+
+[Install]
+WantedBy=multi-user.target

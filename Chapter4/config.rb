@@ -1,5 +1,5 @@
 # Size of the CoreOS cluster created by Vagrant
-$num_instances=1
+$num_instances=3
 
 # Used to fetch a new discovery token for a cluster of size $num_instances
 $new_discovery_url="https://discovery.etcd.io/new?size=#{$num_instances}"
@@ -7,23 +7,23 @@ $new_discovery_url="https://discovery.etcd.io/new?size=#{$num_instances}"
 # To automatically replace the discovery token on 'vagrant up', uncomment
 # the lines below:
 #
-#if File.exists?('user-data') && ARGV[0].eql?('up')
-#  require 'open-uri'
-#  require 'yaml'
-#
-#  token = open($new_discovery_url).read
-#
-#  data = YAML.load(IO.readlines('user-data')[1..-1].join)
-#  if data['coreos'].key? 'etcd'
-#    data['coreos']['etcd']['discovery'] = token
-#  end
-#  if data['coreos'].key? 'etcd2'
-#    data['coreos']['etcd2']['discovery'] = token
-#  end
-#
-#  yaml = YAML.dump(data)
-#  File.open('user-data', 'w') { |file| file.write("#cloud-config\n\n#{yaml}") }
-#end
+if File.exists?('user-data') && ARGV[0].eql?('up')
+  require 'open-uri'
+  require 'yaml'
+
+  token = open($new_discovery_url).read
+
+  data = YAML.load(IO.readlines('user-data')[1..-1].join)
+  if data['coreos'].key? 'etcd'
+    data['coreos']['etcd']['discovery'] = token
+  end
+  if data['coreos'].key? 'etcd2'
+    data['coreos']['etcd2']['discovery'] = token
+  end
+
+  yaml = YAML.dump(data)
+  File.open('user-data', 'w') { |file| file.write("#cloud-config\n\n#{yaml}") }
+end
 #
 
 #
@@ -36,10 +36,10 @@ $new_discovery_url="https://discovery.etcd.io/new?size=#{$num_instances}"
 # Change basename of the VM
 # The default value is "core", which results in VMs named starting with
 # "core-01" through to "core-${num_instances}".
-$instance_name_prefix="core-dev"
+#$instance_name_prefix="core"
 
 # Official CoreOS channel from which updates should be downloaded
-$update_channel='beta'
+#$update_channel='alpha'
 
 # Log the serial consoles of CoreOS VMs to log/
 # Enable by setting value to true, disable with false
@@ -52,7 +52,7 @@ $update_channel='beta'
 # If 2375 is used, Vagrant will auto-increment (e.g. in the case of $num_instances > 1)
 # You can then use the docker tool locally by setting the following env var:
 #   export DOCKER_HOST='tcp://127.0.0.1:2375'
-$expose_docker_tcp=2375
+#$expose_docker_tcp=2375
 
 # Enable NFS sharing of your home directory ($HOME) to CoreOS
 # It will be mounted at the same path in the VM as on the host.
@@ -69,7 +69,7 @@ $expose_docker_tcp=2375
 # $shared_folders = {'/path/on/host' => '/path/on/guest', '/home/foo/app' => '/app'}
 # or, to map host folders to guest folders of the same name,
 # $shared_folders = Hash[*['/home/foo/app1', '/home/foo/app2'].map{|d| [d, d]}.flatten]
-$shared_folders = {'~/coreos-dev-env/share' => '/home/core/share'}
+#$shared_folders = {}
 
 # Enable port forwarding from guest(s) to host machine, syntax is: { 80 => 8080 }, auto correction is enabled by default.
 #$forwarded_ports = {}

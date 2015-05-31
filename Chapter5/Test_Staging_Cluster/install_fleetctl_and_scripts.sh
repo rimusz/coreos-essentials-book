@@ -7,6 +7,7 @@ function pause(){
 read -p "$*"
 }
 
+echo "Fetching Google Cloud settings ..."
 ## Fetch GC settings
 # project and zone
 project=$(cat settings | grep project= | head -1 | cut -f2 -d"=")
@@ -18,15 +19,18 @@ test_ip=$(gcloud compute instances list --project=$project | grep -v grep | grep
 # get tsc-staging1 server's external IP
 staging_ip=$(gcloud compute instances list --project=$project | grep -v grep | grep -m 1 tsc-staging1 | awk {'print $5'})
 ##
+echo " "
 
 # create main folder and a few subfolders
+echo "Creating 'coreos-tsc-gce' folder and its subfolders ..."
 mkdir -p ~/coreos-tsc-gce/bin
 mkdir -p ~/coreos-tsc-gce/fleet
+echo " "
 
+echo "Installing Development cluster local files ..."
 # copy settings file
 cp -f settings ~/coreos-tsc-gce/
 
-echo "Install etcdctl, ssh shell and cluster access scripts"
 cp -f files/* ~/coreos-tsc-gce/bin/
 cp -f fleet/* ~/coreos-tsc-gce/fleet/
 
@@ -43,8 +47,10 @@ sed -i "" "s/_PROJECT_/$project/"  ~/coreos-tsc-gce/bin/test1.sh
 sed -i "" "s/_PROJECT_/$project/"  ~/coreos-tsc-gce/bin/staging1.sh
 # make files executables
 chmod 755 ~/coreos-tsc-gce/bin/*
+echo " "
 
 # download fleetctl client
+echo "Downloading and instaling fleetctl ..."
 # First let's check which OS we use: OS X or Linux
 uname=$(uname)
 
@@ -78,5 +84,5 @@ fi
 cd ~/coreos-tsc-gce
 
 echo " "
-echo "Install has finished !!!"
+echo "Installation has finished !!!"
 pause 'Press [Enter] key to continue...'

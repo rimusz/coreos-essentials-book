@@ -13,18 +13,16 @@ mkdir ~/coreos-dev-env/bin
 mkdir ~/coreos-dev-env/share
 mkdir ~/coreos-dev-env/fleet
 
-# cd to files folder
-cd files
 # copy scripts
-cp -f *.sh ~/coreos-dev-env/
+cp -f files/*.sh ~/coreos-dev-env/
 # make files executable 
 chmod 755 ~/coreos-dev-env/*
 
-# copy vm folder files
-cp -rf vm ~/coreos-dev-env/
+# copy vm folder
+cp -rf files/vm ~/coreos-dev-env/
 #
 
-# copy fleet folder files
+# copy fleet folder
 cp -rf fleet ~/coreos-dev-env/
 #
 
@@ -44,8 +42,9 @@ vagrant ssh-config core-dev-01 | sed -n "s/IdentityFile//gp" | xargs ssh-add
 
 # download etcd, fleetctl and docker clients
 # First let's check which OS we use: OS X or Linux
+uname=$(uname)
 
-if [ ! -f /etc/os-release ]
+if [[ "${uname}" == "Darwin" ]]
 then
     # OS X
     #
@@ -68,7 +67,7 @@ then
     cd ~/coreos-dev-env/vm
     LATEST_RELEASE=$(vagrant ssh -c 'docker version' | grep 'Server version:' | cut -d " " -f 3- | tr -d '\r')
     echo "Downloading docker v$LATEST_RELEASE client for OS X"
-    curl -o ~/coreos-dev-env/bin/docker http://get.docker.io/builds/Darwin/x86_64/docker-$LATEST_RELEASE
+    curl -o ~/coreos-dev-env/bin/docker https://get.docker.com/builds/Darwin/x86_64/docker-$LATEST_RELEASE
     # Make them executable
     chmod +x ~/coreos-dev-env/bin/*
     #

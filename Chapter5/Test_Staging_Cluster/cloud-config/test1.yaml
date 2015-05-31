@@ -1,8 +1,6 @@
 #cloud-config
 
 coreos:
-  update:
-    reboot-strategy: off
   etcd2:
     listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001
     initial-cluster: control1=http://10.200.1.1:2380
@@ -11,6 +9,8 @@ coreos:
     public-ip: $public_ipv4
     metadata: "role=worker,cpeer=tsc-test1"
   units:
+    - name: etcd2.service
+      command: start
     - name: fleet.service
       command: start
     - name: docker.service
@@ -19,54 +19,5 @@ coreos:
         - name: 50-insecure-registry.conf
           content: |
             [Unit]
-            Requires=flanneld.service
-            After=flanneld.service
             [Service]
             Environment=DOCKER_OPTS='--insecure-registry="0.0.0.0/0"'
-    - name: update-window.service
-      runtime: true
-      content: |
-        [Unit]
-        Description=Reboot if an update has been downloaded
-
-        [Service]
-        ExecStart=/opt/bin/update-window.sh
-    - name: update-window.timer
-      runtime: true
-      command: start
-      content: |
-        [Unit]
-        Description=Reboot timer
-
-        [Timer]
-        OnCalendar=*-*-* 05,06:00/30:00
-write_files:
- - path: /etc/resolv.conf
-   permissions: 0644
-   owner: root
-   content: |
-     nameserver 169.254.169.254
-     nameserver 10.240.0.1
- - path: /opt/bin/update-window.sh
-   permissions: 0755
-   owner: root
-   content: |
-        #!/bin/bash
-        # If etcd is active, this uses locksmith. Otherwise, it randomly delays.
-        delay=$(/usr/bin/expr $RANDOM % 3600 )
-        rebootflag='NEED_REBOOT'
-
-        if update_engine_client -status | grep $rebootflag;
-        then
-            echo -n "etcd is "
-            if systemctl is-active etcd;
-            then
-                echo "Update reboot with locksmithctl."
-                locksmithctl reboot
-            else
-                echo "Update reboot in $delay seconds."
-                sleep $delay
-                reboot
-            fi
-        fi
-        exit 0

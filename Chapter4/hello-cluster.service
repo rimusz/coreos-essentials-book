@@ -1,0 +1,5 @@
+[Unit]
+
+[Service]
+ExecStart=/usr/bin/bash -c "while true; do echo 'Hello Cluster'; sleep 1; done"
+
