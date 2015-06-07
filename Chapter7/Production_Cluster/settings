@@ -1,0 +1,20 @@
+### CoreOS Production Cluster on GCE settings 
+
+## change Google Cloud settings as per your requirements
+# GC settings
+
+# CoreOS RELEASE CHANNEL
+channel=beta
+
+# SET YOUR PROJECT AND ZONE !!!
+project=my-cloud-project
+zone=europe-west1-c
+
+# ETCD CONTROL AND NODES MACHINES TYPE
+#
+control_machine_type=g1-small
+#
+worker_machine_type=n1-standard-1
+##
+
+###

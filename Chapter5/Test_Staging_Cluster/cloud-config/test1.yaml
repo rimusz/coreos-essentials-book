@@ -3,6 +3,7 @@
 coreos:
   etcd2:
     listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001
+    advertise-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001
     initial-cluster: control1=http://10.200.1.1:2380
     proxy: on
   fleet:

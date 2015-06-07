@@ -1,0 +1,24 @@
+[Unit]
+Description=docker-registry
+After=docker.service
+Requires=docker.service
+
+[Service]
+User=core
+TimeoutStartSec=0
+EnvironmentFile=/etc/environment
+ExecStartPre=/usr/bin/docker pull registry:latest
+ExecStartPre=-/bin/bash -c '/usr/bin/docker rm registry'
+ExecStart=/usr/bin/docker run --rm --name registry -e GUNICORN_OPTS=[--preload] -e SETTINGS_FLAVOR=local \
+ -e SEARCH_BACKEND=sqlalchemy -p 5000:5000 \
+ -v /home/core/registry/registry:/tmp/registry registry
+#
+ExecStop=/bin/bash -c '/usr/bin/docker stop registry'
+ExecStopPost=-/bin/bash -c '/usr/bin/docker rm registry'
+#
+
+Restart=always
+RestartSec=10s
+
+[X-Fleet]
+MachineMetadata=cpeer=tsc-reg-cbuilder1

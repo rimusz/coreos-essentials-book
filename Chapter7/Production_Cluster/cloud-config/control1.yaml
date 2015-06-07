@@ -1,0 +1,42 @@
+#cloud-config
+
+coreos:
+  etcd2:
+    name: prod-control1
+    initial-advertise-peer-urls: http://10.220.1.1:2380
+    initial-cluster-token: prod-control_etcd
+    initial-cluster: prod-control1=http://10.220.1.1:2380
+    initial-cluster-state: new
+    listen-peer-urls: http://10.220.1.1:2380,http://10.220.1.1:7001
+    listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001
+    advertise-client-urls: http://10.220.1.1:2379,http://10.220.1.1:4001
+  fleet:
+    metadata: "role=services,cpeer=prod-control1"
+  units:
+    - name: 00-ens4v1.network
+      runtime: true
+      content: |
+        [Match]
+        Name=ens4v1
+
+        [Network]
+        Address=10.220.1.1/24
+    - name: etcd2.service
+      command: start
+    - name: fleet.service
+      command: start
+    - name: docker.service
+      command: start
+      drop-ins:
+        - name: 50-insecure-registry.conf
+          content: |
+            [Unit]
+            [Service]
+            Environment=DOCKER_OPTS='--insecure-registry="0.0.0.0/0"'
+write_files:
+ - path: /etc/resolv.conf
+   permissions: 0644
+   owner: root
+   content: |
+     nameserver 169.254.169.254
+     nameserver 10.240.0.1

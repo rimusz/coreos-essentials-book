@@ -1,0 +1,25 @@
+[Unit]
+Description=docker-builder
+After=docker.service
+Requires=docker.service
+
+[Service]
+User=core
+TimeoutStartSec=0
+EnvironmentFile=/etc/environment
+ExecStartPre=-/bin/sh -c 'docker pull quay.io/rimusz/dbuilder:latest'
+ExecStartPre=-/bin/sh -c '/usr/bin/docker rm docker-builder'
+ExecStart=/bin/sh -c '/usr/bin/docker run --rm --name docker-builder --hostname="$(hostname | cut -d. -f1)-docker-builder" -p 2222:22 \
+ -v /home/core/.ssh/authorized_keys:/tmp/authorized_keys \
+ -v /home/core/data:/data -v /var/run/docker.sock:/var/run/docker.sock \
+ -v /usr/bin/docker:/usr/bin/docker -v /usr/lib/libdevmapper.so.1.02:/usr/lib/libdevmapper.so.1.02 \
+ quay.io/rimusz/dbuilder:latest'
+#
+ExecStop=/bin/sh -c '/usr/bin/docker stop docker-builder'
+ExecStopPost=-/bin/sh -c '/usr/bin/docker rm docker-builder'
+
+Restart=always
+RestartSec=10s
+
+[X-Fleet]
+MachineMetadata=cpeer=tsc-reg-cbuilder1

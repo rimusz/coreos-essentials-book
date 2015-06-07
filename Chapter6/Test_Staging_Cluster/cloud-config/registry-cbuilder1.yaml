@@ -8,8 +8,16 @@ coreos:
     proxy: on
   fleet:
     public-ip: $public_ipv4
-    metadata: "role=worker,cpeer=tsc-staging1"
+    metadata: "role=worker,cpeer=tsc-reg-cbuilder1"
   units:
+    - name: 00-ens4v1.network
+      runtime: true
+      content: |
+        [Match]
+        Name=ens4v1
+
+        [Network]
+        Address=10.200.4.1/24
     - name: etcd2.service
       command: start
     - name: fleet.service
@@ -22,3 +30,10 @@ coreos:
             [Unit]
             [Service]
             Environment=DOCKER_OPTS='--insecure-registry="0.0.0.0/0"'
+write_files:
+ - path: /etc/resolv.conf
+   permissions: 0644
+   owner: root
+   content: |
+     nameserver 169.254.169.254
+     nameserver 10.240.0.1
