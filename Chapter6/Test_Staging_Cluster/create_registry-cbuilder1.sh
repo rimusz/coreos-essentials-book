@@ -1,8 +1,6 @@
 #!/bin/bash
 # Create TS cluster workers
 
-# Update required settings in "settings" file before running this script
-
 function pause(){
 read -p "$*"
 }
@@ -16,11 +14,13 @@ channel=$(cat ~/coreos-tsc-gce/settings | grep channel= | head -1 | cut -f2 -d"=
 # worker instance type
 worker_machine_type=$(cat ~/coreos-tsc-gce/settings | grep worker_machine_type= | head -1 | cut -f2 -d"=")
 # get the latest full image name
-image=$(gcloud compute images list | grep -v grep | grep coreos-$channel | awk {'print $1'})
+image=$(gcloud compute images list --project=$project | grep -v grep | grep coreos-$channel | awk {'print $1'})
 ##
 
 # create registry-cbuilder1 instance
-gcloud compute instances create tsc-registry-cbuilder1 --project=$project --image=$image --image-project=coreos-cloud --boot-disk-size=40 --zone=$zone --machine-type=$worker_machine_type --metadata-from-file user-data=cloud-config/registry-cbuilder1.yaml --can-ip-forward --tags tsc-registry-cbuilder1 tsc
+gcloud compute instances create tsc-registry-cbuilder1 --project=$project --image=$image --image-project=coreos-cloud \
+ --boot-disk-size=40 --zone=$zone --machine-type=$worker_machine_type --metadata-from-file user-data=cloud-config/registry-cbuilder1.yaml \
+ --can-ip-forward --tags=tsc-registry-cbuilder1,tsc
 # create a static IP for the new instance
 gcloud compute routes create ip-10-200-4-1-tsc-registry-cbuilder1 --project=$project \
          --next-hop-instance tsc-registry-cbuilder1 \
