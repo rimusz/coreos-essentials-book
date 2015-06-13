@@ -2,6 +2,8 @@
 # Build docker container for website1
 # and release it 
 
+ssh-add ~/.ssh/google_compute_engine &>/dev/null
+
 function pause(){
 read -p "$*"
 }
@@ -20,6 +22,8 @@ ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  core@$cbuilder1
 # sync files from staging to docker builder
 echo "Deploying code to docker builder server !!!"
 ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no core@$cbuilder1 '/usr/bin/docker exec docker-builder rsync -e "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" -avzW --delete core@10.200.3.1:/home/core/share/nginx/html/ /data/website1'
+# change folder permisions to 755
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no  core@$cbuilder1 "/usr/bin/docker exec docker-builder /bin/bash -c 'sudo chmod -R 755 /data/website1'"
 
 echo "Build new docker image and push to registry!!!"
 ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no core@$cbuilder1 "/usr/bin/docker exec docker-builder /bin/bash -c 'cd /data && ./build.sh && ./push.sh'"

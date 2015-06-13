@@ -6,9 +6,7 @@ User=core
 TimeoutStartSec=0
 EnvironmentFile=/etc/environment
 ExecStartPre=-/usr/bin/docker rm prod-website1
-ExecStart=/usr/bin/docker run --rm --name prod-website1 -p 80:80 \
--v /home/core/share/nginx/html:/usr/share/nginx/html \
-website1:latest
+ExecStart=/usr/bin/docker run --rm --name prod-website1 -p 80:80 10.200.4.1:5000/website1:latest
 #
 ExecStop=/usr/bin/docker stop prod-website1
 ExecStopPost=-/usr/bin/docker rm prod-website1

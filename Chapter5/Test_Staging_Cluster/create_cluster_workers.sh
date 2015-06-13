@@ -28,10 +28,15 @@ gcloud compute instances create tsc-test1 --project=$project --image=$image --im
 gcloud compute instances create tsc-staging1 --project=$project --image=$image --image-project=coreos-cloud \
  --boot-disk-size=200 --zone=$zone --machine-type=$worker_machine_type \
  --metadata-from-file user-data=cloud-config/staging1.yaml --can-ip-forward --tags=tsc-staging1,tsc
-
-# Open port 80 HTTP access to test1 and staging1 instances
+# create a static IP for the staging1 instance
+gcloud compute routes create ip-10-200-3-1-tsc-staging1 --project=$project \
+ --next-hop-instance tsc-staging1 \
+ --next-hop-instance-zone $zone \
+ --destination-range 10.200.3.1/32
+ 
+# Open port 80 HTTP access to web servers
 gcloud compute firewall-rules create http-80 --project=$project \
- --allow tcp:80 --target-tags=tsc-test1,tsc-staging1
+ --allow tcp:80 --target-tags=tsc,prod
 
 echo " "
 echo "Setup has finished !!!"
