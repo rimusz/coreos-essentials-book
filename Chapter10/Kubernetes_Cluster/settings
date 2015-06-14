@@ -1,0 +1,23 @@
+## change Google Cloud settings as per your requirements
+# GC settings
+
+# SET YOUR PROJECT AND ZONE !!!
+project=my-cloud-project
+zone=europe-west1-c
+
+# CoreOS RELEASE CHANNEL
+channel=beta
+
+# MASTER AND NODE MACHINE TYPES
+master_machine_type=g1-small
+node_machine_type=n1-standard-1
+##
+
+###
+# master name
+master_name=k8s-master
+
+# node name and count
+node_name=k8s-node
+node_count=2
+###
