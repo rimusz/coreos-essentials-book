@@ -6,7 +6,7 @@ project=my-cloud-project
 zone=europe-west1-c
 
 # CoreOS RELEASE CHANNEL
-channel=beta
+channel=stable
 
 # MASTER AND NODE MACHINE TYPES
 master_machine_type=g1-small

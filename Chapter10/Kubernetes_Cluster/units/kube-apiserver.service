@@ -4,7 +4,7 @@ Documentation=https://github.com/GoogleCloudPlatform/kubernetes
 
 [Service]
 ExecStartPre=-/usr/bin/mkdir -p /opt/bin
-ExecStartPre=/bin/bash -c '/usr/bin/wget -N -P /opt/bin https://storage.googleapis.com/kubernetes-release/release/_K8S_VERSION_/bin/linux/amd64/kube-apiserver'
+ExecStartPre=/bin/bash -c '/usr/bin/wget -N -P /opt/bin https://storage.googleapis.com/kubernetes-release/release/v0.19.0/bin/linux/amd64/kube-apiserver'
 ExecStartPre=/usr/bin/chmod +x /opt/bin/kube-apiserver
 ExecStart=/opt/bin/kube-apiserver \
  --allow_privileged=true \
@@ -15,8 +15,9 @@ ExecStart=/opt/bin/kube-apiserver \
  --service-cluster-ip-range=10.100.0.0/16 \
  --etcd_servers=http://127.0.0.1:4001 \
  --public_address_override=10.222.1.1 \
+ --cloud_provider=gce \
  --cors_allowed_origins=.* \
- --logtostderr=true
+ --logtostderr=true \
  --runtime_config=api/v1
 
 Restart=always
