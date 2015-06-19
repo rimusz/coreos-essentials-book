@@ -9,8 +9,9 @@ ExecStartPre=/bin/bash -c '/usr/bin/wget -N -O /opt/bin/kube-register https://gi
 ExecStartPre=/usr/bin/chmod +x /opt/bin/kube-register
 ExecStart=/opt/bin/kube-register \
  --metadata=role=node \
- --fleet-endpoint=unix:///var/run/fleet.sock \
+ --fleet-endpoint=http://127.0.0.1:2379 \
  --api-endpoint=http://127.0.0.1:8080 \
+ --reverse-lookup=true \
  --healthz-port=10248
 
 Restart=always

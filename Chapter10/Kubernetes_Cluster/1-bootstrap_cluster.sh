@@ -49,7 +49,7 @@ do
      --project=$project --image=$image --image-project=coreos-cloud \
      --boot-disk-type=pd-standard --boot-disk-size=200 --zone=$zone \
      --machine-type=$node_machine_type --metadata-from-file user-data=./cloud-config/node.yaml \
-     --can-ip-forward --tags=k8s-cluster,k8s-nodes
+     --can-ip-forward --tags=k8s-cluster,k8s-nodes,prod
 done
 #
 
@@ -58,7 +58,7 @@ mkdir -p ~/k8s-cluster/bin
 # copy files there
 cp -f settings ~/k8s-cluster
 cp -f set_k8s_access.sh ~/k8s-cluster/bin
-
+cp -rf units ~/k8s-cluster
 echo " "
 echo "Cluster machines setup has finished !!!"
 pause 'Press [Enter] key to continue ...'

@@ -9,6 +9,7 @@ ExecStartPre=/bin/bash -c '/usr/bin/wget -N -P /opt/bin https://storage.googleap
 ExecStartPre=/usr/bin/chmod +x /opt/bin/kube-controller-manager
 ExecStart=/opt/bin/kube-controller-manager \
  --master=127.0.0.1:8080 \
+ --cloud_provider=gce \
  --logtostderr=true
 Restart=always
 RestartSec=10
