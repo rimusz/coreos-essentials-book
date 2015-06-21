@@ -40,7 +40,6 @@ echo "Kubernetes $k8s_version will be installed ... "
 fleetctl start ./units/kube-apiserver.service
 fleetctl start ./units/kube-controller-manager.service
 fleetctl start ./units/kube-scheduler.service
-fleetctl start ./units/kube-register.service
 fleetctl start ./units/kube-kubelet.service 
 fleetctl start ./units/kube-proxy.service
 echo " "

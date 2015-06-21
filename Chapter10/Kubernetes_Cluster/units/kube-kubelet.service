@@ -9,10 +9,7 @@ ExecStartPre=/usr/bin/chmod +x /opt/bin/kubelet
 ExecStart=/opt/bin/kubelet \
  --address=0.0.0.0 \
  --port=10250 \
-<<<<<<< HEAD
  --register-node=true \
-=======
->>>>>>> 6cd4cad2683ccf3afcd7801785ff7536922f66af
  --api_servers=http://10.222.1.1:8080 \
  --allow_privileged=true \
  --logtostderr=true \
