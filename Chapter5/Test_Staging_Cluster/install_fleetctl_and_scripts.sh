@@ -54,12 +54,13 @@ echo "Downloading and instaling fleetctl ..."
 # First let's check which OS we use: OS X or Linux
 uname=$(uname)
 
+# check remote fleet version
+FLEET_RELEASE=$(gcloud compute --project=$project ssh --zone=$zone "core@tsc-control1" --command "fleetctl version | cut -d ' ' -f 3- | tr -d '\r' ")
+cd ~/coreos-tsc-gce/bin
+
 if [[ "${uname}" == "Darwin" ]]
 then
     # OS X
-    #
-    FLEET_RELEASE=$(ssh core@$control_ip fleetctl version | cut -d " " -f 3- | tr -d '\r')
-    cd ~/coreos-tsc-gce/bin
     echo "Downloading fleetctl v$FLEET_RELEASE for OS X"
     curl -L -o fleet.zip "https://github.com/coreos/fleet/releases/download/v$FLEET_RELEASE/fleet-v$FLEET_RELEASE-darwin-amd64.zip"
     unzip -j -o "fleet.zip" "fleet-v$FLEET_RELEASE-darwin-amd64/fleetctl"
@@ -69,9 +70,6 @@ then
     #
 else
     # Linux
-    #
-    FLEET_RELEASE=$(ssh core@$control_ip fleetctl version | cut -d " " -f 3- | tr -d '\r')
-    cd ~/coreos-tsc-gce/bin
     echo "Downloading fleetctl v$FLEET_RELEASE for Linux"
     wget "https://github.com/coreos/fleet/releases/download/v$FLEET_RELEASE/fleet-v$FLEET_RELEASE-linux-amd64.tar.gz"
     tar -zxvf fleet-v$FLEET_RELEASE-linux-amd64.tar.gz fleet-v$FLEET_RELEASE-linux-amd64/fleetctl --strip 1
